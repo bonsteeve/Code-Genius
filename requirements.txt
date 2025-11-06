@@ -1,0 +1,15 @@
+# Codebase Genius Requirements
+# Core dependencies for the Jac-based code documentation system
+
+# Jac Programming Language
+jaclang
+
+# Git repository cloning
+GitPython
+
+# LLM integration
+google-genai
+
+# Optional: Additional LLM providers
+# openai
+# anthropic
