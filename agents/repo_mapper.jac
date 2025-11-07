@@ -16,30 +16,30 @@ node repo_mapper {
     def summarize_readme(content: str) -> str by llm();
     
     can execute with supervisor entry {
-        std.out("Starting Repo Mapper Agent...");
+        print("Starting Repo Mapper Agent...");
         
         result = utils.git_utils.clone_repository(self.repo_url);
         repo_path = result[0];
         success = result[1];
         if not success {
-            std.err("Failed to clone repository");
+            print("Failed to clone repository");
             disengage;
         }
         
-        std.out("Repository cloned successfully to: " + repo_path);
+        print("Repository cloned successfully to: " + repo_path);
         
         file_tree = utils.code_parser.get_file_tree(repo_path);
-        std.out("File tree generated");
+        print("File tree generated");
         
         readme_content = utils.code_parser.read_readme(repo_path);
         if readme_content != "" {
-            std.out("README found, analyzing...");
+            print("README found, analyzing...");
             
             prompt = "Summarize the following README file in 3-4 sentences, highlighting the main purpose, key features, and important dependencies:\n\n" + readme_content;
             readme_summary = self.summarize_readme(prompt);
-            std.out("README summarized");
+            print("README summarized");
         } else {
-            std.out("No README found");
+            print("No README found");
         }
         
         self.repo_path = repo_path;
@@ -47,7 +47,7 @@ node repo_mapper {
         self.readme_content = readme_content;
         self.readme_summary = readme_summary;
         
-        std.out("Repo Mapper Agent completed");
+        print("Repo Mapper Agent completed");
         
         report {
             "repo_path": self.repo_path,

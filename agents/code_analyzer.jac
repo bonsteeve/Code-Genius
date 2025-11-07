@@ -14,18 +14,18 @@ node code_analyzer {
     def analyze_relationships(code_summary: str) -> str by llm();
     
     can execute with supervisor entry {
-        std.out("Starting Code Analyzer Agent...");
+        print("Starting Code Analyzer Agent...");
         
         if self.repo_path == "" {
-            std.err("Repository path not provided");
+            print("Repository path not provided");
             disengage;
         }
         
         analysis_result = utils.code_parser.analyze_codebase(self.repo_path);
-        std.out("Codebase analysis completed");
-        std.out("Found " + str(analysis_result.total_files) + " files");
-        std.out("Found " + str(analysis_result.total_functions) + " functions");
-        std.out("Found " + str(analysis_result.total_classes) + " classes");
+        print("Codebase analysis completed");
+        print("Found " + str(analysis_result.total_files) + " files");
+        print("Found " + str(analysis_result.total_functions) + " functions");
+        print("Found " + str(analysis_result.total_classes) + " classes");
         
         code_graph = {
             "files": analysis_result.python_files,
@@ -37,7 +37,7 @@ node code_analyzer {
         };
         
         if len(analysis_result.python_files) > 0 {
-            std.out("Analyzing code relationships...");
+            print("Analyzing code relationships...");
             
             code_summary = "";
             for file in analysis_result.python_files[:10] {
@@ -51,13 +51,13 @@ node code_analyzer {
             relationship_analysis = self.analyze_relationships(prompt);
             
             code_graph["relationship_analysis"] = relationship_analysis;
-            std.out("Code relationships analyzed");
+            print("Code relationships analyzed");
         }
         
         self.analysis_result = analysis_result;
         self.code_graph = code_graph;
         
-        std.out("Code Analyzer Agent completed");
+        print("Code Analyzer Agent completed");
         
         report {
             "analysis_result": self.analysis_result,

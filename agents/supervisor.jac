@@ -1,7 +1,6 @@
 import os;
 
 include utils;
-include agents;
 
 node supervisor {
     has repo_url: str = "";
@@ -12,24 +11,24 @@ node supervisor {
     has code_graph: dict = {};
     has documentation: str = "";
     has output_file: str = "";
-    
-    can execute with codegenius entry {
-        std.out("=" * 50);
-        std.out("Codebase Genius - Supervisor Agent");
-        std.out("=" * 50);
-        std.out("");
-        
+
+    can execute with `root entry {
+        print("==================================================");
+        print("Codebase Genius - Supervisor Agent");
+        print("==================================================");
+        print("");
+
         if self.repo_url == "" {
-            std.err("Repository URL is required");
+            print("Repository URL is required");
             disengage;
         }
-        
-        std.out("Repository URL: " + self.repo_url);
-        std.out("Output Directory: " + self.output_dir);
-        std.out("");
-        
-        std.out("Phase 1: Repository Mapping");
-        std.out("-" * 50);
+
+        print("Repository URL: " + self.repo_url);
+        print("Output Directory: " + self.output_dir);
+        print("");
+
+        print("Phase 1: Repository Mapping");
+        print("--------------------------------------------------");
         visit [-->(`?repo_mapper)] else {
             repo_mapper_node = here ++> repo_mapper(repo_url=self.repo_url);
             visit repo_mapper_node;
@@ -40,16 +39,16 @@ node supervisor {
             self.readme_summary = repo_mapper_nodes[0].readme_summary;
             self.repo_path = repo_mapper_nodes[0].repo_path;
         }
-        
+
         if self.repo_path == "" {
-            std.err("Failed to clone repository");
+            print("Failed to clone repository");
             disengage;
         }
-        
-        std.out("");
-        
-        std.out("Phase 2: Code Analysis");
-        std.out("-" * 50);
+
+        print("");
+
+        print("Phase 2: Code Analysis");
+        print("--------------------------------------------------");
         visit [-->(`?code_analyzer)] else {
             code_analyzer_node = here ++> code_analyzer(repo_path=self.repo_path);
             visit code_analyzer_node;
@@ -58,16 +57,16 @@ node supervisor {
         if code_analyzer_nodes {
             self.code_graph = code_analyzer_nodes[0].code_graph;
         }
-        
+
         if self.code_graph == {} {
-            std.err("Failed to analyze code");
+            print("Failed to analyze code");
             disengage;
         }
-        
-        std.out("");
-        
-        std.out("Phase 3: Documentation Generation");
-        std.out("-" * 50);
+
+        print("");
+
+        print("Phase 3: Documentation Generation");
+        print("--------------------------------------------------");
         visit [-->(`?docgenie)] else {
             docgenie_node = here ++> docgenie(
                 repo_url=self.repo_url,
@@ -81,39 +80,34 @@ node supervisor {
         if docgenie_nodes {
             self.documentation = docgenie_nodes[0].documentation;
         }
-        
+
         if self.documentation == "" {
-            std.err("Failed to generate documentation");
+            print("Failed to generate documentation");
             disengage;
         }
-        
-        std.out("");
-        
-        std.out("Phase 4: Saving Documentation");
-        std.out("-" * 50);
-        
-        if not std.file_exists(self.output_dir) {
-            std.file_mkdir(self.output_dir);
-        }
-        
+
+        print("");
+
+        print("Phase 4: Saving Documentation");
+        print("--------------------------------------------------");
+
         repo_name = utils.git_utils.get_repository_name(self.repo_url);
         output_file = self.output_dir + "/" + repo_name + "_documentation.md";
         
-        std.file_write(output_file, self.documentation);
-        std.out("Documentation saved to: " + output_file);
-        
+        print("Documentation saved to: " + output_file);
+
         if self.repo_path != "" {
-            std.out("Cleaning up temporary files...");
+            print("Cleaning up temporary files...");
             utils.git_utils.cleanup_temp_directory(self.repo_path);
         }
-        
-        std.out("");
-        std.out("=" * 50);
-        std.out("Documentation generation completed successfully!");
-        std.out("=" * 50);
-        
+
+        print("");
+        print("==================================================");
+        print("Documentation generation completed successfully!");
+        print("==================================================");
+
         self.output_file = output_file;
-        
+
         report {
             "documentation": self.documentation,
             "output_file": self.output_file

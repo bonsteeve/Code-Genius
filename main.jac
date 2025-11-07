@@ -1,18 +1,20 @@
 import from dotenv { load_dotenv }
+import from utils.git_utils { validate_github_url }
 
 import os;
 
-include utils;
-
-include agents;
+include agents.supervisor;
+include agents.repo_mapper;
+include agents.code_analyzer; 
+include agents.docgenie;
 
 walker codegenius {
     has repo_url: str = "";
     has output_dir: str = "./output";
     
     can execute with `root entry {
-        std.out("Codebase Genius - Documentation Generator");
-        std.out("==========================================\n");
+        print("Codebase Genius - Documentation Generator");
+        print("==========================================\n");
         
         if self.repo_url == "" {
             repo_url_env = os.getenv("REPO_URL");
@@ -27,38 +29,45 @@ walker codegenius {
         }
         
         if self.repo_url == "" {
-            std.err("Error: Repository URL is required");
-            std.out("Usage: REPO_URL=https://github.com/user/repo jac run main.jac");
-            std.out("   or: export REPO_URL=https://github.com/user/repo && jac run main.jac");
+            print("Error: Repository URL is required");
+            print("Usage: REPO_URL=https://github.com/user/repo jac run main.jac");
+            print("  or: export REPO_URL=https://github.com/user/repo && jac run main.jac");
             disengage;
         }
         
-        if not utils.git_utils.validate_github_url(self.repo_url) {
-            std.err("Error: Invalid GitHub repository URL");
-            std.out("Please provide a valid GitHub URL (e.g., https://github.com/user/repo)");
+        if not validate_github_url(self.repo_url) {
+            print("Error: Invalid GitHub repository URL");
+            print("Please provide a valid GitHub URL (e.g., https://github.com/user/repo)");
             disengage;
         }
         
-        std.out("Starting documentation generation...");
-        std.out("Repository: " + self.repo_url);
-        std.out("Output Directory: " + self.output_dir);
-        std.out("");
+        print("Starting documentation generation...");
+        print("Repository: " + self.repo_url);
+        print("Output Directory: " + self.output_dir);
+        print("");
         
-        visit [-->(`?supervisor)] else {
-            supervisor_node = here ++> supervisor(repo_url=self.repo_url, output_dir=self.output_dir);
-            visit supervisor_node;
-        }
+        supervisor_node = here ++> supervisor(repo_url=self.repo_url, output_dir=self.output_dir);
+        print("Created supervisor node, visiting...");
+        visit supervisor_node;
+        print("Supervisor visit completed.");
         
         supervisor_nodes = [here --> (`?supervisor)];
+        print("Found " + str(len(supervisor_nodes)) + " supervisor nodes");
         if supervisor_nodes and supervisor_nodes[0].documentation != "" {
-            std.out("\n✓ Documentation generated successfully!");
-            std.out("Output file: " + supervisor_nodes[0].output_file);
+            print("\n✓ Documentation generated successfully!");
+            print("Output file: " + supervisor_nodes[0].output_file);
         } else {
-            std.err("\n✗ Failed to generate documentation");
+            print("\n✗ Failed to generate documentation");
+            if supervisor_nodes {
+                print("Supervisor node exists but documentation is empty: '" + supervisor_nodes[0].documentation + "'");
+            } else {
+                print("No supervisor nodes found");
+            }
         }
     }
 }
 
 with entry {
     load_dotenv();
+    root spawn codegenius();
 }

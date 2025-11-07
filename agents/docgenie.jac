@@ -17,7 +17,7 @@ node docgenie {
     def generate_summary(repo_info: str) -> str by llm();
     
     can execute with supervisor entry {
-        std.out("Starting DocGenie Agent...");
+        print("Starting DocGenie Agent...");
         
         repo_name = utils.git_utils.get_repository_name(self.repo_url);
         
@@ -100,7 +100,7 @@ node docgenie {
             }
         }
         
-        std.out("Generating final documentation summary...");
+        print("Generating final documentation summary...");
         summary_prompt = "Create a concise summary (2-3 paragraphs) of this codebase based on the following information:\n\n";
         summary_prompt += "Repository: " + repo_name + "\n";
         summary_prompt += "Files: " + str(self.code_graph.get("statistics", {}).get("total_files", 0)) + "\n";
@@ -114,8 +114,8 @@ node docgenie {
         
         self.documentation = documentation;
         
-        std.out("DocGenie Agent completed");
-        std.out("Documentation generated: " + str(len(documentation)) + " characters");
+        print("DocGenie Agent completed");
+        print("Documentation generated: " + str(len(documentation)) + " characters");
         
         report {
             "documentation": self.documentation
