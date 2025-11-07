@@ -1,6 +1,13 @@
-# Environment files
-.env
-*.env
+# Project documentation files (not tracked)
+instructions.md
+Assignment.pdf
+Codebase genius.pdf
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
 
 # Python
 __pycache__/
@@ -20,17 +27,14 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
-share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 
-# Virtual environments
-venv/
-.venv/
-ENV/
-env/
+# Environment variables
+.env
+.env.local
+.env.*.local
 
 # IDE
 .vscode/
@@ -41,25 +45,24 @@ env/
 
 # OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Logs
-*.log
-logs/
+# Jaseci
+*.jac.bc
+*.jac.log
+*.jac.db
+
+# Output files
+output/
+docs/generated/
+*.md.bak
 
 # Temporary files
 tmp/
 temp/
 *.tmp
 
-# Generated documentation
-*_documentation.md
+# Logs
+*.log
+logs/
 
-# Jac specific
-*.jbc
-.jac/

@@ -1,15 +1,23 @@
-# Codebase Genius Requirements
-# Core dependencies for the Jac-based code documentation system
+# Jaseci Framework
+jaseci>=1.4.0
+jaseci-ai-kit>=1.4.0
 
-# Jac Programming Language
-jaclang
+# LLM Integration (byllm for Gemini)
+byllm>=0.1.0
 
-# Git repository cloning
-GitPython
+# Repository Operations
+GitPython>=3.1.40
 
-# LLM integration
-google-genai
+# Code Parsing
+tree-sitter>=0.20.4
+tree-sitter-python>=0.20.4
+tree-sitter-javascript>=0.20.4
 
-# Optional: Additional LLM providers
-# openai
-# anthropic
+# Utilities
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Documentation Generation
+markdown>=3.5.1
+pymdown-extensions>=10.4
+

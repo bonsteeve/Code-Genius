@@ -1,99 +1,158 @@
-# Codebase Genius 🧠
+# Codebase Genius
 
-An AI-powered, multi-agent application built using the Jac Programming Language that analyzes GitHub repositories and generates comprehensive technical documentation.
+An AI-powered, agentic system capable of autonomously generating comprehensive documentation for any given software repository from GitHub.
 
-## 🚀 Overview
+## Overview
 
-Codebase Genius operates by building a comprehensive Graph as a shared knowledge base, which is navigated and modified by specialized Walkers (Agents). The system uses a three-phase pipeline to transform raw code into structured documentation.
+Codebase Genius uses a multi-agent architecture where specialized AI agents collaborate in a pipeline to analyze and document codebases effectively. The system consists of:
 
-## 🏗️ System Architecture
+- **Supervisor Agent**: Manages the entire workflow and orchestrates all worker agents
+- **Repo Mapper**: Analyzes repository structure and README
+- **Code Analyzer**: Parses and understands source code
+- **DocGenie**: Produces documentation and diagrams
 
-### Graph Schema (Data Model)
-- **Repo Node**: Project root storing cloning metadata
-- **File Node**: Represents source code files with content
-- **Concept Node**: AI-generated high-level abstractions
-- **Edges**: `contains` (Repo → File) and `relates_to` (File → Concept)
+## Features
 
-### Agent Pipeline
-1. **RepoMapper 🗺️**: Clones repository and creates initial graph structure
-2. **CodeAnalyzer 🧠**: Analyzes code to identify and define core concepts
-3. **DocGenie ✍️**: Synthesizes concepts into structured documentation
+- 🔍 **Automatic Repository Analysis**: Clone and analyze any GitHub repository
+- 📊 **Code Structure Mapping**: Generate file trees and understand code relationships
+- 🤖 **AI-Powered Documentation**: Use LLM (Gemini) to generate comprehensive documentation
+- 📈 **Visual Diagrams**: Create Mermaid diagrams for code structure and relationships
+- 🐍 **Python Support**: Optimized for Python repositories (extensible to other languages)
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.8+
-- Jac Programming Language
-- Git
-- LLM API access (Gemini recommended)
+- Jaseci framework
+- Gemini API key
 
-## 🛠️ Installation
+## Installation
 
-1. **Clone the repository:**
+1. **Clone the repository** (if not already done):
    ```bash
-   git clone https://github.com/your-username/Code-Genius.git
+   git clone <your-repo-url>
    cd Code-Genius
    ```
 
-2. **Install dependencies:**
+2. **Set up virtual environment**:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Set up environment:**
-   ```bash
-   cp .env.template .env
-   # Edit .env and add your API keys
-   ```
+4. **Configure Gemini API key**:
+   - Get your API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Create a `.env` file in the project root:
+     ```bash
+     GEMINI_API_KEY=your_gemini_api_key_here
+     OUTPUT_DIR=./output
+     TEMP_DIR=./tmp
+     ```
 
-## 🎯 Usage
+## Usage
 
-Run the system by providing a target repository URL:
+### Basic Usage
 
 ```bash
-jac run codebase_genius.jac --repo-url https://github.com/username/repository.git
+jac run main.jac -repo_url https://github.com/user/repository
 ```
 
-### Example:
+### With Custom Output Directory
+
 ```bash
-jac run codebase_genius.jac --repo-url https://github.com/facebook/react.git
+jac run main.jac -repo_url https://github.com/user/repository -output_dir ./docs
 ```
 
-## 📊 Output
+### Example
 
-The system generates:
-- Comprehensive markdown documentation
-- Identified code concepts and abstractions
-- Architecture overview
-- Technical implementation details
-- Usage instructions
+```bash
+jac run main.jac -repo_url https://github.com/python/cpython
+```
 
-## 🔧 Development
+This will:
+1. Clone the repository
+2. Analyze the file structure
+3. Parse the code
+4. Generate comprehensive documentation
+5. Save the output to `./output/<repository_name>_documentation.md`
 
-### Branch Structure
-- `main`: Production-ready code
-- `develop`: Development branch for new features
-- Feature branches: `feature/feature-name`
+## Project Structure
 
-### Contributing
-1. Create a feature branch from `develop`
-2. Implement your changes
-3. Test thoroughly
-4. Submit a pull request
+```
+Code-Genius/
+├── agents/
+│   ├── supervisor.jac      # Supervisor agent orchestrating the workflow
+│   ├── repo_mapper.jac     # Repository mapping agent
+│   ├── code_analyzer.jac   # Code analysis agent
+│   └── docgenie.jac        # Documentation generation agent
+├── utils/
+│   ├── git_utils.py        # Git operations utilities
+│   ├── code_parser.py      # Code parsing utilities
+│   └── diagram_generator.py # Diagram generation utilities
+├── output/                 # Generated documentation output
+├── main.jac                # Main entry point
+├── requirements.txt       # Python dependencies
+└── README.md              # This file
+```
 
-## 🔒 Security
+## Workflow
 
-- Repository cloning uses temporary directories
-- Automatic cleanup of cloned repositories
-- No permanent storage of analyzed code
+The system follows this workflow:
 
-## 📝 License
+1. **Clone Repository**: Fetch the source code from GitHub
+2. **Map Structure**: Generate file tree and analyze README
+3. **Analyze Code**: Parse source files and build code context graph
+4. **Generate Documentation**: Create comprehensive markdown documentation with diagrams
+5. **Save Output**: Write documentation to output directory
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## Configuration
 
-## 🤝 Contributing
+### Environment Variables
 
-Contributions are welcome! Please read our contributing guidelines and submit pull requests to the `develop` branch.
+- `GEMINI_API_KEY`: Your Gemini API key (required)
+- `OUTPUT_DIR`: Output directory for generated documentation (default: `./output`)
+- `TEMP_DIR`: Temporary directory for cloned repositories (default: `./tmp`)
 
-## 📞 Support
+## Output
 
-For questions or support, please open an issue on GitHub.
+The generated documentation includes:
+
+- **Project Overview**: Summary from README analysis
+- **File Structure**: Visual file tree diagram
+- **Code Analysis**: Statistics and architecture overview
+- **Class Hierarchy**: Visual class relationship diagrams
+- **Module Documentation**: Detailed documentation for each module
+- **Summary**: AI-generated codebase summary
+
+## Supported Languages
+
+- **Primary**: Python, Jac
+- **Extended**: Can be expanded to support additional languages
+
+## Troubleshooting
+
+### Common Issues
+
+1. **API Key Error**: Make sure your `.env` file contains a valid `GEMINI_API_KEY`
+2. **Repository Clone Failed**: Check your internet connection and repository URL
+3. **Import Errors**: Ensure all dependencies are installed: `pip install -r requirements.txt`
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+[Add your license here]
+
+## References
+
+- [Jaseci Documentation](https://docs.jaseci.org)
+- [byllm Plugin](https://github.com/jaseci-labs/jaseci/tree/main/jaseci_ai_kit/jac_misc)
+- [Reference Implementation](https://github.com/jaseci-labs/Agentic-AI/tree/main/task_manager/byllm)
+- [Project Requirements](https://github.com/jaseci-labs/jaseci/blob/873a0846e5aeca52dee571c858c38c8e6f9504b5/docs/docs/communityhub/fun/p2.md)
+
