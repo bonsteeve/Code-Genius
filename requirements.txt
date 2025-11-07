@@ -1,0 +1,23 @@
+# Jaseci Framework
+jaseci>=1.4.0
+jaseci-ai-kit>=1.4.0
+
+# LLM Integration (byllm for Gemini)
+byllm>=0.1.0
+
+# Repository Operations
+GitPython>=3.1.40
+
+# Code Parsing
+tree-sitter>=0.20.4
+tree-sitter-python>=0.20.4
+tree-sitter-javascript>=0.20.4
+
+# Utilities
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Documentation Generation
+markdown>=3.5.1
+pymdown-extensions>=10.4
+
